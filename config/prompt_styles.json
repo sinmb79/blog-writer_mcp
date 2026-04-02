@@ -1,0 +1,55 @@
+{
+  "_comment": "코너별 시각 스타일 설정 (쇼츠 영상 프롬프트에 사용)",
+  "_updated": "2026-03-29",
+  "corners": {
+    "쉬운세상": {
+      "caption_template": "hormozi",
+      "color_palette": ["#FFD700", "#FFFFFF", "#000000"],
+      "video_style": "clean minimal bright",
+      "motion_preference": ["ken_burns_in", "pan_right"],
+      "tone": "educational friendly"
+    },
+    "숨은보물": {
+      "caption_template": "tiktok_viral",
+      "color_palette": ["#FF6B6B", "#FFFFFF", "#1A1A1A"],
+      "video_style": "dynamic energetic colorful",
+      "motion_preference": ["glitch_reveal", "pan_left"],
+      "tone": "exciting surprising"
+    },
+    "바이브리포트": {
+      "caption_template": "hormozi",
+      "color_palette": ["#FFD700", "#FFFFFF", "#0D0D0D"],
+      "video_style": "professional cinematic dark",
+      "motion_preference": ["ken_burns_out", "parallax"],
+      "tone": "authoritative analytical"
+    },
+    "팩트체크": {
+      "caption_template": "brand_4thpath",
+      "color_palette": ["#00D4FF", "#FFFFFF", "#0A0A1A"],
+      "video_style": "corporate data-driven precise",
+      "motion_preference": ["rotate_slow", "ken_burns_in"],
+      "tone": "objective factual"
+    },
+    "한컷": {
+      "caption_template": "tiktok_viral",
+      "color_palette": ["#FF6B6B", "#FF9F43", "#FFFFFF"],
+      "video_style": "bold graphic striking",
+      "motion_preference": ["glitch_reveal", "pan_right"],
+      "tone": "punchy viral"
+    },
+    "웹소설": {
+      "caption_template": "brand_4thpath",
+      "color_palette": ["#00D4FF", "#9B59B6", "#0D0D0D"],
+      "video_style": "dramatic atmospheric fantasy",
+      "motion_preference": ["parallax", "ken_burns_in"],
+      "tone": "narrative dramatic"
+    }
+  },
+  "default": {
+    "caption_template": "hormozi",
+    "color_palette": ["#FFD700", "#FFFFFF", "#000000"],
+    "video_style": "clean professional",
+    "motion_preference": ["ken_burns_in"],
+    "tone": "neutral"
+  }
+}

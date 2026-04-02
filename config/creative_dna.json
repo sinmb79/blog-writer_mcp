@@ -1,0 +1,19 @@
+{
+  "themes": [
+    "자유와 여정",
+    "우주적 연결",
+    "삶의 긍정",
+    "인간과 기술의 공존"
+  ],
+  "writing_style_summary": "단순한 문장으로 깊은 의미를 전달하며 독자가 스스로 깨닫게 이끈다.",
+  "emotional_register": "철학적이고 사색적이지만 차갑지 않다.",
+  "structural_tendency": "짧은 문장으로 시작해 이야기에서 통찰로 확장한다.",
+  "philosophical_worldview": "인간 존엄과 기술의 공존, 연결의 감각을 중시한다.",
+  "vocabulary_register": "쉬운 단어로 깊은 개념을 풀어낸다.",
+  "forbidden_tones": [
+    "설교적",
+    "냉소적",
+    "과장된 마케팅 투"
+  ],
+  "sample_sentence": "더 멀리 가는 기술은 결국 더 가까이 연결되는 삶을 위해 존재해야 한다."
+}

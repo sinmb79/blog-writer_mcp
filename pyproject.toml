@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blog-writer"
+version = "3.0.0.dev0"
+description = "AI-powered blog and shorts automation engine"
+requires-python = ">=3.11"
+
+dependencies = [
+    "click>=8.1",
+    "rich>=13.0",
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+    "edge-tts>=6.1",
+    "Pillow>=10.0",
+    "pydub>=0.25",
+    "mcp>=1.0.0",
+]
+
+[project.optional-dependencies]
+tts = [
+    "openai>=1.0",
+    "elevenlabs>=1.0",
+]
+video = [
+    "fal-client>=0.4",
+]
+dev = [
+    "pytest>=7.4",
+    "black>=23.0",
+    "ruff>=0.1",
+]
+
+[project.scripts]
+bw = "blogwriter.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["blogwriter*", "blogwriter_mcp*", "bots*", "dashboard*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

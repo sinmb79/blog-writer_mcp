@@ -1,0 +1,18 @@
+{
+  "_comment": "사용자 의도 설정 — bw init으로 생성/업데이트",
+  "_updated": "2026-03-29",
+  "budget": "free",
+  "level": "beginner",
+  "engines": {
+    "writing": {"provider": "auto"},
+    "tts": {"provider": "auto"},
+    "video": {"provider": "auto"},
+    "image": {"provider": "auto"}
+  },
+  "platforms": ["youtube"],
+  "services": {
+    "openclaw": false,
+    "claude_web": false,
+    "gemini_web": false
+  }
+}

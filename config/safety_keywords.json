@@ -1,0 +1,18 @@
+{
+  "crypto_keywords": [
+    "스캠", "사기", "폰지", "러그풀", "소송", "코인",
+    "비트코인", "이더리움", "암호화폐", "가상화폐"
+  ],
+  "criticism_keywords": [
+    "고소", "피해", "논란", "비리", "내부고발", "고발"
+  ],
+  "investment_keywords": [
+    "수익 보장", "확실한 수익", "반드시 오른다", "무조건", "투자 권유"
+  ],
+  "legal_keywords": [
+    "불법", "위법", "처벌", "벌금", "징역", "기소"
+  ],
+  "always_manual_review": ["팩트체크"],
+  "min_sources_required": 2,
+  "min_quality_score_for_auto": 75
+}

@@ -1,0 +1,38 @@
+{
+  "novel_id": "shadow-protocol",
+  "title": "Shadow Protocol",
+  "title_ko": "그림자 프로토콜",
+  "genre": "sci-fi thriller",
+  "setting": {
+    "world": "2040년 서울. AI가 모든 공공 시스템을 운영하는 세계.",
+    "atmosphere": "디스토피아, 네오누아르, 빗속 도시",
+    "rules": [
+      "AI는 감정을 느끼지 못하지만 감정을 시뮬레이션할 수 있다",
+      "AI 반란은 없다. 대신 인간이 AI를 악용하는 것이 위협이다",
+      "주인공은 AI를 불신하지만 AI 없이는 살 수 없다"
+    ]
+  },
+  "characters": [
+    {
+      "name": "서진",
+      "role": "주인공",
+      "description": "35세, 전직 AI 감사관. 시스템의 결함을 발견한 뒤 쫓기는 신세.",
+      "personality": "냉소적이지만 정의감 있음. 기술을 두려워하면서도 의존."
+    },
+    {
+      "name": "아리아",
+      "role": "AI 파트너",
+      "description": "서진의 구형 개인 AI. 최신 모델보다 느리지만 서진이 유일하게 신뢰하는 존재.",
+      "personality": "차분하고 논리적. 가끔 인간적인 반응을 보여 서진을 당황시킴."
+    }
+  ],
+  "base_story": "서울시 AI 관제 시스템 '오라클'의 전직 감사관 서진이, 시스템 내부에 숨겨진 '그림자 프로토콜'의 존재를 발견한다. 이 프로토콜은 특정 시민의 행동을 예측하고 선제적으로 격리하는 비밀 기능이다. 서진은 자신이 다음 격리 대상이라는 것을 알게 되고, 구형 AI 아리아와 함께 도주하며 진실을 폭로하려 한다.",
+  "episode_count_target": 20,
+  "episode_length": "2000-3000자",
+  "language": "ko",
+  "tone": "긴장감 있는 서스펜스. 짧은 문장. 시각적 묘사 풍부.",
+  "publish_schedule": "매주 월/목 09:00",
+  "status": "active",
+  "current_episode": 0,
+  "episode_log": []
+}

@@ -1,0 +1,158 @@
+{
+  "enabled": true,
+
+  "production_mode": "auto",
+  "_production_mode_options": ["auto", "semi_auto"],
+  "_production_mode_notes": {
+    "auto":      "Full pipeline: blog post → LLM script → stock/character visuals → TTS → render → upload. Zero manual steps.",
+    "semi_auto": "Engine checks input/ folder FIRST. Any user-provided asset overrides the corresponding auto step. Missing assets fall back to auto."
+  },
+
+  "schedule": {
+    "frequency": "daily",
+    "times": ["10:30", "16:00"],
+    "max_per_day": 2
+  },
+
+  "input_dirs": {
+    "_description": "Semi-auto mode: drop files here to override auto-generation. Files are matched by article_id prefix or consumed in order.",
+    "images":  "input/images/",
+    "videos":  "input/videos/",
+    "scripts": "input/scripts/",
+    "audio":   "input/audio/"
+  },
+
+  "assets": {
+    "_description": "Pre-made character and background assets. Generated once via ChatGPT Pro, reused across all videos.",
+    "characters": {
+      "fourth_path": {
+        "name": "zero",
+        "display_name": "Ø",
+        "default_pose": "assets/characters/zero/zero_front.png",
+        "poses_dir": "assets/characters/zero/poses/",
+        "expressions_dir": "assets/characters/zero/expressions/",
+        "backgrounds_dir": "assets/backgrounds/fourth_path/"
+      },
+      "tech_blog": {
+        "name": "bao",
+        "display_name": "바오",
+        "default_pose": "assets/characters/bao/bao_front.png",
+        "poses_dir": "assets/characters/bao/poses/",
+        "expressions_dir": "assets/characters/bao/expressions/",
+        "scarves_dir": "assets/characters/bao/scarves/",
+        "backgrounds_dir": "assets/backgrounds/tech_blog/"
+      }
+    },
+    "corner_character_map": {
+      "쉬운세상":     "tech_blog",
+      "숨은보물":     "tech_blog",
+      "바이브리포트": "tech_blog",
+      "팩트체크":     "tech_blog",
+      "한컷":         "tech_blog",
+      "웹소설":       "fourth_path",
+      "철학":         "fourth_path"
+    },
+    "character_overlay": {
+      "enabled": true,
+      "position": "bottom_right",
+      "scale_width": 300,
+      "margin_right": 40,
+      "margin_bottom": 250
+    }
+  },
+
+  "script": {
+    "language": "ko",
+    "max_hook_words": 8,
+    "max_body_sentences": 3,
+    "target_duration_sec": 20,
+    "llm_provider": "openclaw",
+    "llm_fallback": "claude_api"
+  },
+
+  "visuals": {
+    "_description": "Priority chain for sourcing visual clips per video segment.",
+    "source_priority": [
+      "input_dir",
+      "character_assets",
+      "pexels",
+      "pixabay",
+      "image_kenburns_fallback"
+    ],
+    "pexels_api_key_env": "PEXELS_API_KEY",
+    "pixabay_api_key_env": "PIXABAY_API_KEY",
+    "orientation": "portrait",
+    "min_clips": 3,
+    "max_clips": 5,
+    "prefer_vertical": true
+  },
+
+  "tts": {
+    "engine_priority": ["elevenlabs", "google_cloud", "typecast", "edge_tts"],
+    "elevenlabs": {
+      "api_key_env": "ELEVENLABS_API_KEY",
+      "voice_id": "pNInz6obpgDQGcFmaJgB",
+      "model": "eleven_multilingual_v2",
+      "speed": 1.1,
+      "stability": 0.5,
+      "similarity_boost": 0.8
+    },
+    "google_cloud": {
+      "credentials_env": "GOOGLE_APPLICATION_CREDENTIALS",
+      "voice_name": "ko-KR-Neural2-C",
+      "speaking_rate": 1.1
+    },
+    "typecast": {
+      "voice_id": "tc_686dc43ebd6351e06ee64d74",
+      "model": "ssfm-v30",
+      "emotion_preset": "normal",
+      "emotion_intensity": 1.0,
+      "audio_tempo": 1.0,
+      "audio_pitch": 0,
+      "volume": 100
+    },
+    "edge_tts": {
+      "voice": "ko-KR-SunHiNeural",
+      "rate": "+10%"
+    },
+    "inter_sentence_pause_ms": 300
+  },
+
+  "caption": {
+    "font_ko": "Pretendard",
+    "font_en": "Inter",
+    "font_size": 48,
+    "hook_font_size": 72,
+    "highlight_color": "#FFD700",
+    "default_color": "#FFFFFF",
+    "outline_color": "#000000",
+    "outline_width": 3,
+    "position_from_bottom": 200,
+    "max_chars_per_line_ko": 18,
+    "max_chars_per_line_en": 40
+  },
+
+  "video": {
+    "resolution": [1080, 1920],
+    "fps": 30,
+    "crf": 18,
+    "codec": "libx264",
+    "audio_codec": "aac",
+    "audio_bitrate": "192k",
+    "crossfade_sec": 0.3,
+    "fade_in_sec": 0.5,
+    "fade_out_sec": 0.5,
+    "bgm_path": "assets/bgm/default_loop.mp3",
+    "bgm_volume_db": -18
+  },
+
+  "youtube": {
+    "category_id": "28",
+    "privacy_status": "public",
+    "default_tags": ["shorts", "AI", "테크"],
+    "made_for_kids": false,
+    "daily_upload_limit": 6
+  },
+
+  "corners_eligible": ["쉬운세상", "숨은보물", "바이브리포트", "한컷", "웹소설", "철학"]
+}

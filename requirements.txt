@@ -1,0 +1,33 @@
+pytrends
+google-api-python-client
+google-auth-oauthlib
+google-auth-httplib2
+python-dotenv
+fastapi
+uvicorn
+python-multipart
+apscheduler
+requests
+beautifulsoup4
+feedparser
+markdown
+python-telegram-bot>=21.0
+lxml
+anthropic
+Pillow
+requests-oauthlib
+claude-agent-sdk
+mcp>=1.0.0
+# Phase 2 (쇼츠 변환)
+gTTS
+openai
+pydub
+# Phase 2 (YouTube 업로드 진행 표시)
+google-resumable-media
+# Phase 3 (엔진 추상화 — 선택적 의존성)
+# google-generativeai  # Gemini Writer / Veo 사용 시 pip install google-generativeai
+# Shorts Bot (Phase A)
+edge-tts>=6.1.0
+# openai-whisper        # Edge TTS 단어별 타임스탬프용 (선택, pip install openai-whisper)
+# elevenlabs>=1.0.0     # TTS 최고 품질 (선택, pip install elevenlabs)
+# google-cloud-texttospeech  # TTS 중간 품질 (선택)

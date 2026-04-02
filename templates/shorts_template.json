@@ -1,0 +1,57 @@
+{
+  "resolution": [1080, 1920],
+  "fps": 30,
+  "transition_duration": 0.5,
+  "bgm_volume": 0.08,
+  "tts_voice_ko": "ko-KR-Wavenet-A",
+  "tts_voice_en": "en-US-Wavenet-D",
+  "tts_speaking_rate_default": 1.05,
+  "font_title": "assets/fonts/NotoSansKR-Bold.ttf",
+  "font_body": "assets/fonts/NotoSansKR-Regular.ttf",
+  "font_title_size": 72,
+  "font_body_size": 48,
+  "font_meta_size": 32,
+  "font_ticker_size": 28,
+  "brand_color": "#c8a84e",
+  "dark_bg": "#0a0a0d",
+  "ticker_text": "The 4th Path · {corner} · {date}",
+  "outro_url": "the4thpath.com",
+  "outro_cta": "팔로우하면 매일 이런 정보를 받습니다",
+  "brand_name": "The 4th Path",
+  "brand_sub": "Independent Tech Media",
+  "brand_by": "by 22B Labs",
+  "corners": {
+    "쉬운세상": {
+      "color": "#7c3aed",
+      "bg_prompt_style": "Minimalist abstract background, soft purple gradient, subtle tech grid pattern, clean, modern, editorial. Vertical 9:16 aspect ratio, no text, no people.",
+      "tts_speed": 1.0,
+      "transition": "fade"
+    },
+    "숨은보물": {
+      "color": "#1d6fb0",
+      "bg_prompt_style": "Minimalist abstract background, deep blue with golden light accents, treasure map subtle texture, clean editorial. Vertical 9:16, no text.",
+      "tts_speed": 1.05,
+      "transition": "slideleft"
+    },
+    "바이브리포트": {
+      "color": "#d85a30",
+      "bg_prompt_style": "Minimalist abstract background, warm coral and white, creative energy waves, modern editorial. Vertical 9:16, no text.",
+      "tts_speed": 1.1,
+      "transition": "slideleft"
+    },
+    "팩트체크": {
+      "color": "#bf3a3a",
+      "bg_prompt_style": "Minimalist abstract background, dark red and white, data visualization grid subtle texture, serious editorial. Vertical 9:16, no text.",
+      "tts_speed": 1.0,
+      "transition": "fade",
+      "force_data_card": true
+    },
+    "한컷": {
+      "color": "#8a7a2e",
+      "bg_prompt_style": null,
+      "tts_speed": 1.0,
+      "transition": "fade",
+      "max_duration": 20
+    }
+  }
+}

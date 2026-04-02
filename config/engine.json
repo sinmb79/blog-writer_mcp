@@ -1,0 +1,207 @@
+{
+  "_comment": "The 4th Path 블로그 자동 수익 엔진 — 엔진 설정 (v3)",
+  "_updated": "2026-03-29",
+  "writing": {
+    "provider": "openclaw",
+    "_comment_provider": "openclaw=ChatGPT Pro(OAuth), claude_web=Claude Max(웹쿠키), gemini_web=Gemini Pro(웹쿠키), claude=Anthropic API키, gemini=Google AI API키",
+    "options": {
+      "openclaw": {
+        "agent_name": "blog-writer",
+        "timeout": 300
+      },
+      "claude_web": {
+        "cookie_env": "CLAUDE_WEB_COOKIE",
+        "ua_env": "CLAUDE_WEB_UA",
+        "timeout": 240
+      },
+      "gemini_web": {
+        "psid_env": "GEMINI_WEB_1PSID",
+        "psidts_env": "GEMINI_WEB_1PSIDTS"
+      },
+      "claude": {
+        "api_key_env": "ANTHROPIC_API_KEY",
+        "model": "claude-opus-4-6",
+        "max_tokens": 4096,
+        "temperature": 0.7
+      },
+      "gemini": {
+        "api_key_env": "GEMINI_API_KEY",
+        "model": "gemini-2.5-pro",
+        "max_tokens": 4096,
+        "temperature": 0.7
+      }
+    }
+  },
+  "tts": {
+    "provider": "openai",
+    "options": {
+      "google_cloud": {
+        "api_key_env": "GOOGLE_TTS_API_KEY",
+        "voice": "ko-KR-Wavenet-A",
+        "speaking_rate": 1.05,
+        "pitch": 0
+      },
+      "openai": {
+        "api_key_env": "OPENAI_API_KEY",
+        "model": "tts-1-hd",
+        "voice": "alloy",
+        "speed": 1.0
+      },
+      "elevenlabs": {
+        "api_key_env": "ELEVENLABS_API_KEY",
+        "model": "eleven_multilingual_v2",
+        "voice_id": "pNInz6obpgDQGcFmaJgB",
+        "stability": 0.5,
+        "similarity_boost": 0.75
+      },
+      "gtts": {
+        "lang": "ko",
+        "slow": false
+      }
+    }
+  },
+  "image_generation": {
+    "provider": "external",
+    "options": {
+      "dalle": {
+        "api_key_env": "OPENAI_API_KEY",
+        "model": "dall-e-3",
+        "size": "1024x1792",
+        "quality": "standard"
+      },
+      "external": {
+        "comment": "수동 이미지 제공 — 자동 생성 없음"
+      }
+    }
+  },
+  "video_generation": {
+    "provider": "smart_router",
+    "options": {
+      "smart_router": {
+        "priority": ["kling_free", "veo3", "seedance2", "ffmpeg_slides"],
+        "daily_cost_limit_usd": 0.50,
+        "prefer_free_first": true,
+        "fallback": "ffmpeg_slides"
+      },
+      "kling_free": {
+        "api_url": "https://api.klingai.com/v1",
+        "api_key_env": "KLING_API_KEY",
+        "free_daily_credits": 66,
+        "mode": "standard",
+        "resolution": "720p",
+        "aspect_ratio": "9:16",
+        "audio": true,
+        "cost_per_sec": 0
+      },
+      "veo3": {
+        "api_key_env": "GEMINI_API_KEY",
+        "model": "veo-3.1",
+        "resolution": "720p",
+        "aspect_ratio": "9:16",
+        "audio": true,
+        "cost_per_sec": 0.03
+      },
+      "seedance2": {
+        "provider": "fal.ai",
+        "api_key_env": "FAL_API_KEY",
+        "model": "seedance-2.0",
+        "resolution": "720p",
+        "audio": true,
+        "cost_per_sec": 0.022
+      },
+      "ffmpeg_slides": {
+        "resolution": "1080x1920",
+        "fps": 30,
+        "transition": "fade",
+        "transition_duration": 0.5,
+        "bgm_volume": 0.08,
+        "zoom_speed": 0.0003,
+        "zoom_max": 1.05,
+        "burn_subtitles": true
+      },
+      "seedance": {
+        "_comment": "레거시 — seedance2/FAL_API_KEY로 대체됨",
+        "api_url": "https://api.seedance2.ai/v1/generate",
+        "api_key_env": "SEEDANCE_API_KEY",
+        "resolution": "1080x1920",
+        "duration": "10s",
+        "audio": true,
+        "fallback": "ffmpeg_slides"
+      },
+      "runway": {
+        "api_key_env": "RUNWAY_API_KEY",
+        "model": "gen3a_turbo",
+        "duration": 10,
+        "ratio": "768:1344",
+        "fallback": "ffmpeg_slides"
+      },
+      "veo": {
+        "comment": "Google Veo 3.1 레거시 — veo3로 대체됨",
+        "api_key_env": "GEMINI_API_KEY",
+        "fallback": "ffmpeg_slides"
+      }
+    }
+  },
+  "publishing": {
+    "blogger": {
+      "enabled": true,
+      "blog_id_env": "BLOG_MAIN_ID"
+    },
+    "youtube": {
+      "enabled": true,
+      "channel_id_env": "YOUTUBE_CHANNEL_ID",
+      "category": "shorts",
+      "privacy": "public",
+      "tags": [
+        "쇼츠",
+        "AI",
+        "the4thpath"
+      ]
+    },
+    "instagram": {
+      "enabled": false,
+      "account_id_env": "INSTAGRAM_ACCOUNT_ID"
+    },
+    "x": {
+      "enabled": false
+    },
+    "tiktok": {
+      "enabled": false
+    },
+    "novel": {
+      "enabled": false,
+      "comment": "노벨피아 연재 — 추후 활성화"
+    }
+  },
+  "quality_gates": {
+    "gate1_research_min_score": 60,
+    "gate2_writing_min_score": 70,
+    "gate3_review_required": true,
+    "gate3_auto_approve_score": 90,
+    "min_key_points": 2,
+    "min_word_count": 300,
+    "safety_check": true
+  },
+  "schedule": {
+    "collector": "07:00",
+    "writer": "08:00",
+    "converter": "08:30",
+    "publisher": "09:00",
+    "youtube_uploader": "10:00",
+    "analytics": "22:00"
+  },
+  "brand": {
+    "name": "The 4th Path",
+    "sub": "Independent Tech Media",
+    "by": "by 22B Labs",
+    "url": "the4thpath.com",
+    "cta": "팔로우하면 매일 이런 정보를 받습니다"
+  },
+  "optional_keys": {
+    "KLING_API_KEY": "Kling 3.0 AI 영상 생성 (66 무료 크레딧/일)",
+    "FAL_API_KEY": "Seedance 2.0 AI 영상 생성 (fal.ai)",
+    "ELEVENLABS_API_KEY": "ElevenLabs 고품질 TTS",
+    "GEMINI_API_KEY": "Google Gemini 글쓰기 / Veo 영상",
+    "RUNWAY_API_KEY": "Runway Gen-3 AI 영상 생성"
+  }
+}

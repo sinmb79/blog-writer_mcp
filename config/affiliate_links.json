@@ -1,0 +1,33 @@
+{
+  "fixed_links": [
+    {
+      "keyword": "ChatGPT Plus",
+      "url": "https://chat.openai.com",
+      "label": "ChatGPT Plus 바로가기",
+      "type": "external"
+    },
+    {
+      "keyword": "Claude Pro",
+      "url": "https://claude.ai",
+      "label": "Claude Pro 바로가기",
+      "type": "external"
+    }
+  ],
+  "coupang_category_map": {
+    "마이크": "mic",
+    "웹캠": "webcam",
+    "키보드": "keyboard",
+    "마우스": "mouse",
+    "모니터": "monitor",
+    "노트북": "laptop",
+    "이어폰": "earphone",
+    "헤드셋": "headset",
+    "외장하드": "external-hdd",
+    "USB허브": "usb-hub",
+    "책상": "desk",
+    "의자": "chair",
+    "서적": "book",
+    "스피커": "speaker"
+  },
+  "disclaimer_text": "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다."
+}

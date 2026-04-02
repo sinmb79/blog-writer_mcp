@@ -1,0 +1,72 @@
+{
+  "min_score": 60,
+  "scoring": {
+    "korean_relevance": {
+      "max": 30,
+      "description": "한국 독자 관련성",
+      "keywords": ["한국", "국내", "한글", "카카오", "네이버", "쿠팡", "삼성", "LG", "현대", "기아", "배달", "토스", "당근", "야놀자"]
+    },
+    "freshness": {
+      "max": 20,
+      "description": "트렌드 신선도",
+      "hours_full_score": 24,
+      "hours_zero_score": 168
+    },
+    "search_demand": {
+      "max": 20,
+      "description": "검색 수요 (Google Trends 상대값)"
+    },
+    "source_trust": {
+      "max": 15,
+      "description": "출처 신뢰도",
+      "levels": {
+        "high": 15,
+        "medium": 8,
+        "low": 3
+      },
+      "high_sources": ["github.com", "official blog", "공식", "press release"],
+      "low_sources": ["twitter.com", "x.com", "reddit.com", "개인"]
+    },
+    "monetization": {
+      "max": 15,
+      "description": "수익 연결 가능성",
+      "keywords": ["도구", "앱", "서비스", "제품", "장비", "구독", "할인", "추천"]
+    }
+  },
+  "discard_rules": [
+    {
+      "id": "no_korean_relevance",
+      "description": "한국 독자와 무관한 주제",
+      "condition": "korean_relevance_score == 0"
+    },
+    {
+      "id": "unverified_source",
+      "description": "출처 불명/미확인 사례",
+      "condition": "source_trust_level == 'unknown'"
+    },
+    {
+      "id": "duplicate_topic",
+      "description": "이미 발행한 주제와 유사도 80% 이상",
+      "similarity_threshold": 0.8
+    },
+    {
+      "id": "stale_trend",
+      "description": "7일 이상 지난 트렌드 (에버그린 제외)",
+      "max_age_days": 7,
+      "except_evergreen": true
+    },
+    {
+      "id": "promotional",
+      "description": "광고성/홍보성이 명확한 원문",
+      "keywords": ["광고", "홍보", "스폰서", "협찬", "AD", "sponsored"]
+    },
+    {
+      "id": "clickbait",
+      "description": "클릭베이트성 주제",
+      "patterns": ["충격", "경악", "난리", "ㅋㅋ", "ㅠㅠ", "대박", "레전드", "역대급"]
+    }
+  ],
+  "evergreen_keywords": [
+    "가이드", "방법", "사용법", "입문", "튜토리얼", "기초", "완전정복", "총정리"
+  ]
+}

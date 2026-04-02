@@ -1,0 +1,90 @@
+/* CNN 다크 + 골드 테마 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0a0a0d;
+  --card: #111116;
+  --border: #222228;
+  --text: #e0e0d8;
+  --subtext: #888880;
+  --accent: #c8a84e;
+  --success: #3a7d5c;
+  --warning: #c8a84e;
+  --error: #bf3a3a;
+  --info: #4a5abf;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 스크롤바 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--subtext);
+}
+
+/* 골드 액센트 버튼 */
+.btn-accent {
+  background-color: var(--accent);
+  color: #0a0a0d;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: opacity 0.2s;
+}
+.btn-accent:hover {
+  opacity: 0.85;
+}
+
+/* 카드 기본 */
+.card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+/* 태그 */
+.tag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+/* 상태 뱃지 */
+.badge-done { background: #1a3d2c; color: #4ade80; }
+.badge-running { background: #1a2a4d; color: #60a5fa; }
+.badge-waiting { background: #1a1a22; color: #888880; }
+.badge-error { background: #3d1a1a; color: #f87171; }
+
+/* 칸반 드래그 영역 */
+.kanban-col {
+  min-height: 400px;
+}
+
+/* 로그 레벨 */
+.log-error { color: #f87171; }
+.log-warning { color: #fbbf24; }
+.log-info { color: #60a5fa; }
+.log-debug { color: #888880; }

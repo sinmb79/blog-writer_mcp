@@ -1,0 +1,49 @@
+{
+  "rss_feeds": [
+    {
+      "name": "GeekNews",
+      "url": "https://feeds.feedburner.com/geeknews-feed",
+      "category": "tech",
+      "trust_level": "high"
+    },
+    {
+      "name": "ZDNet Korea",
+      "url": "https://www.zdnet.co.kr/rss/rss.php",
+      "category": "tech",
+      "trust_level": "high"
+    },
+    {
+      "name": "Yonhap IT",
+      "url": "https://www.yna.co.kr/rss/it.xml",
+      "category": "tech",
+      "trust_level": "high"
+    },
+    {
+      "name": "Bloter",
+      "url": "https://www.bloter.net/feed",
+      "category": "tech",
+      "trust_level": "high"
+    }
+  ],
+  "x_keywords": [
+    "바이브코딩",
+    "vibe coding",
+    "AI 자동화",
+    "Claude 사용",
+    "ChatGPT 활용",
+    "비개발자 앱",
+    "노코드 AI"
+  ],
+  "github_trending": {
+    "url": "https://github.com/trending",
+    "languages": ["", "python", "javascript"],
+    "since": "daily"
+  },
+  "hacker_news": {
+    "url": "https://hacker-news.firebaseio.com/v0/topstories.json",
+    "top_n": 30
+  },
+  "product_hunt": {
+    "rss_url": "https://www.producthunt.com/feed"
+  }
+}

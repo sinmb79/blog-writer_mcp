@@ -1,0 +1,82 @@
+# ─── 환경 변수 / 시크릿 — 절대 커밋하지 말 것 ───────────────
+.env
+token.json
+credentials.json
+service_account*.json
+*_secret*.json
+*_key*.json
+
+# ─── 내부 기획·설계 문서 (비공개) ───────────────────────────
+blog-engine-final-masterplan-v3.txt
+shorts-bot-masterplan-v2.md
+character-design-brief.md
+system-engine-config-novel-pipeline*.txt
+dashboard-planning-spec.txt
+
+# ─── 제휴/파트너스 설정 (개인 계정 정보 포함) ────────────────
+coopang_partners.txt
+
+# ─── Claude Code 내부 설정 ───────────────────────────────────
+.claude/
+
+# ─── 런타임 데이터 (개인 글감/발행 이력) ─────────────────────
+data/topics/*.json
+data/collected/*.json
+data/discarded/*.json
+data/pending_review/*.json
+data/published/*.json
+data/analytics/*.json
+data/drafts/*.json
+data/originals/*.json
+data/images/
+data/images/pending_prompts.json
+data/shorts/tts/
+data/shorts/clips/
+data/shorts/rendered/
+data/shorts/scripts/
+data/shorts/captions/
+data/shorts/published/
+data/assist/sessions/
+data/assist/inbox/
+data/novels/
+input/images/
+input/videos/
+input/audio/
+input/scripts/
+input/_processed/
+
+# ─── 생성된 미디어 / 에셋 ─────────────────────────────────────
+data/outputs/
+assets/characters/
+assets/backgrounds/
+assets/bgm/
+assets/fonts/*.ttf
+assets/fonts/*.otf
+
+# ─── 소설 설정 (개인 작품 정보) ──────────────────────────────
+config/novels/
+
+# ─── Python ─────────────────────────────────────────────────
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ─── 로그 ────────────────────────────────────────────────────
+logs/
+
+# ─── Node.js (대시보드 프론트엔드) ───────────────────────────
+dashboard/frontend/node_modules/
+
+# ─── IDE ──────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+.worktrees/

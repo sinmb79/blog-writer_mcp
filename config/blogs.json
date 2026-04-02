@@ -1,0 +1,14 @@
+{
+  "blogs": [
+    {
+      "id": "main",
+      "blog_id": "${BLOG_MAIN_ID}",
+      "name": "테크인사이더",
+      "persona": "tech_insider",
+      "domain": "",
+      "active": true,
+      "phase": 1,
+      "labels": ["쉬운세상", "숨은보물", "바이브리포트", "팩트체크", "한컷"]
+    }
+  ]
+}
