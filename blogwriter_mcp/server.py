@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 import importlib
 from pathlib import Path
 import re
+from typing import Literal
 
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, Field
@@ -19,6 +20,7 @@ collector_bot = importlib.import_module("bots.collector_bot")
 image_bot = importlib.import_module("bots.image_bot")
 linker_bot = importlib.import_module("bots.linker_bot")
 publisher_bot = importlib.import_module("bots.publisher_bot")
+wp_publisher_bot = importlib.import_module("bots.wp_publisher_bot")
 writer_bot = importlib.import_module("bots.writer_bot")
 
 
@@ -82,6 +84,7 @@ class PublishInput(BaseModel):
     sources: list[dict] = Field(default_factory=list)
     quality_score: int = 100
     disclaimer: str = ""
+    platform: Literal["blogger", "wordpress", "both"] = "blogger"
 
 
 class AnalyticsInput(BaseModel):
@@ -281,14 +284,37 @@ async def blog_publish(params: PublishInput) -> dict:
         "sources": params.sources,
         "disclaimer": params.disclaimer,
         "quality_score": params.quality_score,
+        "scheduled_at": params.scheduled_at,
     }
-    success = publisher_bot.publish(article)
-    status = "published" if success else "pending_review"
+    publishers = {
+        "blogger": publisher_bot.publish,
+        "wordpress": wp_publisher_bot.publish,
+    }
+
+    selected = ["blogger", "wordpress"] if params.platform == "both" else [params.platform]
+    results = {}
+    for platform in selected:
+        success = publishers[platform](dict(article))
+        results[platform] = {
+            "published": success,
+            "status": "published" if success else "pending_review",
+        }
+
+    published = all(entry["published"] for entry in results.values())
+    if published:
+        status = "published"
+    elif any(entry["published"] for entry in results.values()):
+        status = "partial_failure"
+    else:
+        status = "pending_review"
+
     return {
         "status": status,
-        "published": success,
+        "published": published,
         "scheduled_at": params.scheduled_at,
         "title": params.title,
+        "platform": params.platform,
+        "results": results,
     }
 
 

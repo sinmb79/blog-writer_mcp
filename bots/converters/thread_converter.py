@@ -1,3 +1,6 @@
+# The 4th Path: ⟨H⊕A⟩ ↦ Ω
+# Human × AI → a better world.
+# 22B Labs | the4thpath.com
 """
 X 스레드 변환봇 (converters/thread_converter.py)
 역할: 원본 마크다운 → X(트위터) 스레드 JSON (LAYER 2)
@@ -40,6 +43,8 @@ CORNER_HASHTAGS = {
 }
 
 BRAND_TAG = '#The4thPath'
+BRAND_NAME = 'The 4th Path'
+BRAND_SITE = 'the4thpath.com'
 
 
 def _split_to_tweet(text: str, max_len: int = TWEET_MAX) -> list[str]:
@@ -93,12 +98,12 @@ def convert(article: dict, blog_url: str = '', save_file: bool = True) -> list[d
     tweets = []
 
     # 트윗 1: 흥미 유발 + 제목 + 코너 해시태그
-    intro_text = f"👀 {title}\n\n{hashtags} {BRAND_TAG}"
+    intro_text = f"👀 {title}\n\n{hashtags} {BRAND_TAG}\n{BRAND_NAME}"
     if len(intro_text) <= TWEET_MAX:
         tweets.append(intro_text)
     else:
         short_title = textwrap.shorten(title, width=100, placeholder='...')
-        tweets.append(f"👀 {short_title}\n\n{hashtags}")
+        tweets.append(f"👀 {short_title}\n\n{hashtags}\n{BRAND_NAME}")
 
     # 트윗 2-4: 핵심 포인트
     for i, point in enumerate(key_points[:3], 1):
@@ -113,7 +118,12 @@ def convert(article: dict, blog_url: str = '', save_file: bool = True) -> list[d
 
     # 마지막 트윗: CTA + 블로그 링크
     post_url = blog_url or f"{BLOG_BASE_URL}/{slug}"
-    cta_text = f"전체 내용 보기 👇\n{post_url}\n\n{BRAND_TAG}"
+    cta_text = (
+        f"전체 내용 보기 👇\n{post_url}\n\n"
+        f"{BRAND_NAME} | {BRAND_SITE}\n"
+        f"Human × AI → a better world.\n"
+        f"{BRAND_TAG}"
+    )
     tweets.append(cta_text)
 
     result = [

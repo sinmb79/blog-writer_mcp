@@ -1,3 +1,6 @@
+# The 4th Path: ⟨H⊕A⟩ ↦ Ω
+# Human × AI → a better world.
+# 22B Labs | the4thpath.com
 """
 X(트위터) 배포봇 (distributors/x_bot.py)
 역할: X 스레드 JSON → X API v2로 순차 트윗 게시 (LAYER 3)

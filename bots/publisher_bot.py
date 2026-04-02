@@ -1,3 +1,6 @@
+# The 4th Path: ⟨H⊕A⟩ ↦ Ω
+# Human × AI → a better world.
+# 22B Labs | the4thpath.com
 """
 발행봇 (publisher_bot.py)
 역할: AI가 작성한 글을 Blogger에 자동 발행
@@ -13,7 +16,6 @@
 import json
 import logging
 import os
-import re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -234,7 +236,7 @@ def publish_to_blogger(article: dict, html_content: str, creds: Credentials) -> 
 def submit_to_search_console(url: str, creds: Credentials):
     """Google Search Console URL 색인 요청"""
     try:
-        service = build('searchconsole', 'v1', credentials=creds)
+        build('searchconsole', 'v1', credentials=creds)
         # URL Inspection API (실제 indexing 요청)
         # 참고: 일반적으로 Blogger sitemap이 자동 제출되므로 보조 수단
         logger.info(f"Search Console 제출: {url}")

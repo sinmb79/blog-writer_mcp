@@ -1,39 +1,4 @@
 {
-  "_comment": "플랫폼별 API 키/설정. 실제 값은 .env에서 관리.",
-  "blogger": {
-    "enabled": true,
-    "publish_time": "09:00",
-    "api": "Blogger API v3",
-    "env_keys": ["BLOG_MAIN_ID", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REFRESH_TOKEN"]
-  },
-  "instagram": {
-    "enabled": false,
-    "publish_time": "10:00",
-    "api": "Instagram Graph API v19.0",
-    "env_keys": ["INSTAGRAM_ACCESS_TOKEN", "INSTAGRAM_ACCOUNT_ID"],
-    "setup_notes": "Facebook Page + Instagram Business 계정 필요"
-  },
-  "x": {
-    "enabled": false,
-    "publish_time": "11:00",
-    "api": "X API v2",
-    "env_keys": ["X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_SECRET"],
-    "setup_notes": "X Developer 계정 + 앱 등록 필요"
-  },
-  "tiktok": {
-    "enabled": false,
-    "publish_time": "18:00",
-    "api": "TikTok Content Posting API",
-    "env_keys": ["TIKTOK_ACCESS_TOKEN"],
-    "phase": "Phase 2",
-    "setup_notes": "TikTok Developer 계정 + 앱 등록 필요"
-  },
-  "youtube": {
-    "enabled": false,
-    "publish_time": "20:00",
-    "api": "YouTube Data API v3",
-    "env_keys": ["YOUTUBE_CHANNEL_ID"],
-    "phase": "Phase 2",
-    "setup_notes": "Google Cloud YouTube API 활성화 필요 (기존 프로젝트에서)"
-  }
+  "blogger": { "enabled": true },
+  "wordpress": { "enabled": false, "url": "" }
 }
