@@ -23,6 +23,13 @@ class CreativeDNAInput(BaseModel):
     additional_context: str = ""
 
 
+class NarrativeDNA(BaseModel):
+    opening_hook: str = "Start from a familiar scene before widening into meaning."
+    tension_engine: str = "Hold the deeper meaning back long enough for curiosity to build."
+    signature_move: str = "Cross lived reality with symbolic reflection."
+    resolution_pattern: str = "End with a calm realization instead of a loud summary."
+
+
 class CreativeDNA(BaseModel):
     themes: list[str]
     writing_style_summary: str
@@ -30,24 +37,40 @@ class CreativeDNA(BaseModel):
     structural_tendency: str
     philosophical_worldview: str
     vocabulary_register: str
+    narrative_dna: NarrativeDNA = Field(default_factory=NarrativeDNA)
     forbidden_tones: list[str]
+    key_prop_tendency: str = ""
     sample_sentence: str
 
-    def to_prompt_context(self) -> str:
-        forbidden = ", ".join(self.forbidden_tones) if self.forbidden_tones else "없음"
-        themes = ", ".join(self.themes) if self.themes else "없음"
-        return (
-            "[창작 DNA 적용]\n"
-            "이 글은 다음 세계관과 문체를 자연스럽게 반영해 작성합니다.\n\n"
-            f"핵심 주제: {themes}\n"
-            f"문체: {self.writing_style_summary}\n"
-            f"감성 톤: {self.emotional_register}\n"
-            f"구조 경향: {self.structural_tendency}\n"
-            f"세계관: {self.philosophical_worldview}\n"
-            f"어휘 수준: {self.vocabulary_register}\n"
-            f"피해야 할 톤: {forbidden}\n"
-            f"예시 문장 분위기: \"{self.sample_sentence}\"\n"
-        )
+    def to_prompt_context(self, include_narrative: bool = True) -> str:
+        forbidden = ", ".join(self.forbidden_tones) if self.forbidden_tones else "none"
+        themes = ", ".join(self.themes) if self.themes else "none"
+        lines = [
+            "[Creative DNA Applied]",
+            "Write the article so the voice feels organic and internally consistent, not imitative.",
+            "",
+            f"Themes: {themes}",
+            f"Writing style: {self.writing_style_summary}",
+            f"Emotional register: {self.emotional_register}",
+            f"Structural tendency: {self.structural_tendency}",
+            f"Philosophical worldview: {self.philosophical_worldview}",
+            f"Vocabulary register: {self.vocabulary_register}",
+            f"Forbidden tones: {forbidden}",
+            f"Sample sentence mood: \"{self.sample_sentence}\"",
+        ]
+
+        if include_narrative:
+            lines.extend(
+                [
+                    f"Opening hook: {self.narrative_dna.opening_hook}",
+                    f"Tension engine: {self.narrative_dna.tension_engine}",
+                    f"Signature move: {self.narrative_dna.signature_move}",
+                    f"Resolution pattern: {self.narrative_dna.resolution_pattern}",
+                    f"Key prop tendency: {self.key_prop_tendency or 'Use a concrete object to carry emotional meaning.'}",
+                ]
+            )
+
+        return "\n".join(lines) + "\n"
 
 
 class CreativeDNAManager:
@@ -64,8 +87,9 @@ class CreativeDNAManager:
 
     def save(self, dna: CreativeDNA) -> CreativeDNA:
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
+        payload = {"extracted_dna": dna.model_dump()}
         self.config_path.write_text(
-            json.dumps(dna.model_dump(), ensure_ascii=False, indent=2),
+            json.dumps(payload, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
         return dna
@@ -80,17 +104,20 @@ class CreativeDNAManager:
     @staticmethod
     def _system_prompt() -> str:
         return (
-            "당신은 사용자의 예술 취향을 분석해 글쓰기 DNA를 구조화하는 편집자다. "
-            "반드시 JSON만 반환하고, 설명 문장은 쓰지 마라."
+            "You analyze a user's artistic preferences and extract a structured Creative DNA profile. "
+            "Return JSON only. Do not include any explanation outside the JSON object."
         )
 
     @staticmethod
     def _build_prompt(preferences: CreativeDNAInput) -> str:
         payload = preferences.model_dump()
         return (
-            "다음 취향 정보를 바탕으로 창작 DNA를 추출해주세요.\n"
-            "문체, 감정 결, 구조적 습관, 세계관, 금지 톤을 통합해 판단하세요.\n"
-            "반드시 아래 JSON 스키마만 반환하세요.\n\n"
+            "Analyze the following creative preferences and extract a reusable writing DNA profile.\n"
+            "Capture style, emotional register, structural tendency, worldview, forbidden tones, "
+            "and a narrative DNA block describing how this writer tends to open, sustain tension, "
+            "perform a signature move, and resolve a piece.\n"
+            "Also infer how this voice tends to use a concrete object or prop to carry emotion.\n"
+            "Return only JSON in the following shape.\n\n"
             f"{json.dumps(payload, ensure_ascii=False, indent=2)}\n\n"
             "{\n"
             '  "themes": ["..."],\n'
@@ -99,7 +126,14 @@ class CreativeDNAManager:
             '  "structural_tendency": "...",\n'
             '  "philosophical_worldview": "...",\n'
             '  "vocabulary_register": "...",\n'
+            '  "narrative_dna": {\n'
+            '    "opening_hook": "...",\n'
+            '    "tension_engine": "...",\n'
+            '    "signature_move": "...",\n'
+            '    "resolution_pattern": "..."\n'
+            "  },\n"
             '  "forbidden_tones": ["..."],\n'
+            '  "key_prop_tendency": "...",\n'
             '  "sample_sentence": "..."\n'
             "}"
         )
@@ -113,4 +147,3 @@ class CreativeDNAManager:
         if not match:
             raise ValueError("Creative DNA response did not contain JSON.")
         return json.loads(match.group(0))
-

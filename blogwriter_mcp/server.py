@@ -8,6 +8,7 @@ from typing import Literal
 
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, Field
+
 from blogwriter_mcp.tools.creative_dna import CreativeDNAInput, CreativeDNAManager
 from blogwriter_mcp.tools.performance_feedback import PerformanceFeedback
 from blogwriter_mcp.tools.seo_optimizer import SEOOptimizer, parse_article_html
@@ -27,8 +28,8 @@ writer_bot = importlib.import_module("bots.writer_bot")
 mcp = FastMCP(
     name="blog_writer_mcp",
     instructions=(
-        "AI 블로그 자동화 MCP. 트렌드 수집, 글쓰기, SEO 최적화, 링크 삽입, "
-        "발행, 성과 피드백, 창작 DNA 적용을 지원합니다."
+        "AI blog automation MCP. It supports trend collection, article writing, SEO optimization, "
+        "affiliate link insertion, publishing, performance feedback, and Creative DNA application."
     ),
     host="127.0.0.1",
     port=8766,
@@ -46,11 +47,12 @@ class WriteArticleInput(BaseModel):
     topic: str
     keywords: list[str] = Field(default_factory=list)
     length: int = 1000
-    corner: str = "쉬운세상"
+    corner: str = "Easy World"
     description: str = ""
     source_url: str = ""
     published_at: str | None = None
     apply_dna: bool = False
+    apply_narrative: bool = True
 
 
 class ImageInput(BaseModel):
@@ -78,7 +80,7 @@ class PublishInput(BaseModel):
     content: str
     labels: list[str] = Field(default_factory=list)
     scheduled_at: str | None = None
-    corner: str = "쉬운세상"
+    corner: str = "Easy World"
     meta: str = ""
     slug: str = ""
     sources: list[dict] = Field(default_factory=list)
@@ -103,8 +105,9 @@ class PipelineInput(BaseModel):
     category: str | None = None
     region: str = "KR"
     count: int = 5
-    corner: str = "쉬운세상"
+    corner: str = "Easy World"
     apply_dna: bool = False
+    apply_narrative: bool = True
     publish: bool = False
 
 
@@ -166,7 +169,10 @@ def _collect_trending_items(params: TrendingInput) -> list[dict]:
         if discard_reason or score < min_score:
             continue
 
-        item["corner"] = item.get("corner") or collector_bot.assign_corner(item, item.get("topic_type", "trending"))
+        item["corner"] = item.get("corner") or collector_bot.assign_corner(
+            item,
+            item.get("topic_type", "trending"),
+        )
         item["coupang_keywords"] = item.get("coupang_keywords") or collector_bot.extract_coupang_keywords(
             item.get("topic", ""),
             item.get("description", ""),
@@ -214,7 +220,7 @@ async def blog_write_article(params: WriteArticleInput) -> dict:
     manager = get_creative_dna_manager()
     dna = manager.load() if params.apply_dna else None
     if dna:
-        style_prefix = dna.to_prompt_context()
+        style_prefix = dna.to_prompt_context(include_narrative=params.apply_narrative)
 
     topic_data = {
         "topic": params.topic,
@@ -227,6 +233,7 @@ async def blog_write_article(params: WriteArticleInput) -> dict:
     if params.keywords:
         article["coupang_keywords"] = params.keywords
     article["dna_applied"] = bool(dna)
+    article["narrative_applied"] = bool(dna and params.apply_narrative)
     return article
 
 
@@ -330,8 +337,10 @@ async def blog_set_creative_dna(params: CreativeDNAInput) -> dict:
         "status": "saved",
         "extracted_themes": dna.themes,
         "writing_style": dna.writing_style_summary,
+        "narrative_dna": dna.narrative_dna.model_dump(),
         "emotional_register": dna.emotional_register,
         "forbidden_tones": dna.forbidden_tones,
+        "key_prop_tendency": dna.key_prop_tendency,
         "sample_sentence": dna.sample_sentence,
     }
 
@@ -370,6 +379,7 @@ async def blog_full_pipeline(params: PipelineInput) -> dict:
             corner=selected_topic.get("corner", params.corner),
             keywords=selected_topic.get("coupang_keywords", []),
             apply_dna=params.apply_dna,
+            apply_narrative=params.apply_narrative,
         )
     )
 
@@ -391,7 +401,7 @@ async def blog_full_pipeline(params: PipelineInput) -> dict:
     )
 
     image_result = None
-    if selected_topic.get("corner") == "한컷":
+    if selected_topic.get("corner") == "시사툰":
         image_result = await blog_generate_image(
             ImageInput(
                 topic=article["title"],
