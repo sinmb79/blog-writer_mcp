@@ -1,476 +1,537 @@
-# 블로그 자동 수익 엔진 v3.2
+# blog-writer-mcp
 
-**The 4th Path** — AI 기반 1인 미디어 자동화 엔진
+<p align="center">
+  <img src="https://img.shields.io/badge/MCP-Streamable_HTTP-blue?style=flat-square" />
+  <img src="https://img.shields.io/badge/Python-3.11+-green?style=flat-square" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" />
+  <img src="https://img.shields.io/badge/Claude-Desktop-purple?style=flat-square" />
+  <img src="https://img.shields.io/badge/ChatGPT-Developer_Mode-black?style=flat-square" />
+</p>
 
-블로그 글 작성부터 멀티플랫폼 배포, YouTube Shorts 생산까지 완전 자동화.
-Windows 미니PC 24시간 운영을 전제로 설계된 무인 운영 시스템.
+<p align="center">
+  <b>AI 블로그 자동화 MCP 서버</b><br/>
+  <i>당신이 사랑한 것들에서 당신만의 목소리를 찾아드립니다</i>
+</p>
 
----
-
-## 목차
-
-1. [개요](#개요)
-2. [주요 기능](#주요-기능)
-3. [아키텍처](#아키텍처)
-4. [설치](#설치)
-5. [설정](#설정)
-6. [사용법](#사용법)
-7. [대시보드](#대시보드)
-8. [YouTube Shorts 봇](#youtube-shorts-봇)
-9. [멀티플랫폼 배포](#멀티플랫폼-배포)
-10. [소설 파이프라인](#소설-파이프라인)
-11. [수동 어시스트 모드](#수동-어시스트-모드)
-12. [Telegram 명령어](#telegram-명령어)
-13. [스케줄](#스케줄)
-14. [엔진 추상화](#엔진-추상화)
-15. [개발 현황](#개발-현황)
+<p align="center">
+  <b>AI Blog Automation MCP Server</b><br/>
+  <i>We find your voice in the things you love</i>
+</p>
 
 ---
 
-## 개요
+## 홍익인간(弘益人間) — 널리 인간을 이롭게 한다
 
-이 프로젝트는 **블로그 자동 수익화**를 위한 풀스택 자동화 엔진입니다.
-Google AdSense, 쿠팡 파트너스, YouTube 광고 수익을 동시에 추구하며
-하나의 블로그 글을 인스타그램, X, TikTok, YouTube Shorts 등 멀티플랫폼 콘텐츠로 자동 변환합니다.
+이 프로젝트는 **글쓰는 능력이 없어도 자신의 목소리로 세상에 말을 걸 수 있도록** 만들어졌습니다.
+파울로 코엘료를 좋아하고, 그리스인 조르바에 감동받고, 인터스텔라를 사랑한다면 -
+그 감수성이 그대로 당신의 글이 됩니다.
 
-### 핵심 설계 원칙
+*This project was built so that anyone - regardless of writing ability - can speak to the world in their own voice.
+If you love Paulo Coelho, were moved by Zorba the Greek, and feel something watching Interstellar -
+that sensibility becomes your writing.*
 
-- **무인 운영**: 매일 정해진 시간에 자동 실행, 사람 개입 불필요
-- **AI 엔진 추상화**: OpenClaw(로컬) / Claude / Gemini 중 선택해 글쓰기 엔진 교체 가능
-- **비용 최소화**: 무료 API(Edge TTS, Pexels 등) 우선, 유료는 선택적
-- **Telegram 제어**: 외출 중에도 스마트폰으로 승인/거부/명령 가능
-
----
-
-## 주요 기능
-
-| 기능 | 설명 |
-|------|------|
-| 트렌드 수집 | Google Trends + RSS 피드 자동 수집, 품질 점수(0-100) 부여 |
-| AI 글쓰기 | LLM으로 Blogger-ready HTML 원고 자동 생성 |
-| 쿠팡 링크 삽입 | 글 주제 키워드 기반 쿠팡 파트너스 링크 자동 삽입 |
-| 블로그 발행 | Blogger API로 자동 발행 + Search Console 색인 요청 |
-| 멀티플랫폼 배포 | 인스타그램 카드/릴스, X 스레드, TikTok, YouTube 자동 배포 |
-| YouTube Shorts | 블로그 글 → TTS + 자막 + 스톡 영상 → Shorts 자동 생산 |
-| 이미지 생성 | DALL-E / 수동 / 요청 모드 선택 가능 |
-| 소설 연재 | 매주 자동 소설 에피소드 생성 + 블로그 발행 |
-| 대시보드 | React + FastAPI 웹 대시보드 (http://localhost:8080) |
-| Telegram 봇 | 명령어로 승인/거부/즉시실행/상태확인 |
+> **MIT 라이선스 · 완전 무료 · 누구든 사용·수정·배포 가능**
+> MIT License · Completely free · Use, modify, distribute freely
 
 ---
 
-## 아키텍처
+## 목차 / Table of Contents
 
-```
-blog-writer_mcp/
-├── bots/
-│   ├── collector_bot.py       트렌드 수집
-│   ├── writer_bot.py          AI 글쓰기
-│   ├── article_parser.py      원고 파싱
-│   ├── linker_bot.py          쿠팡 링크 삽입
-│   ├── publisher_bot.py       Blogger 발행
-│   ├── image_bot.py           이미지 생성/수신
-│   ├── analytics_bot.py       성과 분석
-│   ├── scheduler.py           스케줄러 + Telegram 리스너
-│   ├── engine_loader.py       AI 엔진 팩토리
-│   ├── assist_bot.py          수동 어시스트 파이프라인
-│   ├── shorts_bot.py          YouTube Shorts 오케스트레이터
-│   ├── converters/            변환 엔진 (blog/card/thread/shorts)
-│   ├── distributors/          배포 엔진 (instagram/x/tiktok/youtube)
-│   ├── novel/                 소설 파이프라인
-│   └── shorts/                Shorts 서브모듈 (7개)
-│       ├── tts_engine.py
-│       ├── script_extractor.py
-│       ├── asset_resolver.py
-│       ├── stock_fetcher.py
-│       ├── caption_renderer.py
-│       ├── video_assembler.py
-│       └── youtube_uploader.py
-├── dashboard/
-│   ├── backend/               FastAPI
-│   └── frontend/              React
-├── config/
-│   ├── engine.json            AI 엔진 선택
-│   └── shorts_config.json     Shorts 파이프라인 설정
-├── templates/                 프롬프트 템플릿
-├── assets/                    캐릭터/배경 이미지 (직접 추가)
-├── input/                     수동 에셋 입력 (semi-auto 모드)
-├── scripts/
-│   ├── setup.bat
-│   ├── get_token.py
-│   └── download_fonts.py
-├── blog.cmd                   Windows 런처
-├── blog_runtime.py
-└── runtime_guard.py
+- [이게 뭔가요?](#이게-뭔가요--what-is-this)
+- [창작 DNA란?](#창작-dna란--what-is-creative-dna)
+- [주요 기능](#주요-기능--features)
+- [설치 방법](#설치-방법--installation)
+- [Claude Desktop 연결](#claude-desktop-연결--claude-desktop-setup)
+- [ChatGPT 연결](#chatgpt-연결--chatgpt-setup)
+- [사용 방법](#사용-방법--how-to-use)
+- [도구 목록](#도구-목록--tools)
+- [프로젝트 구조](#프로젝트-구조--project-structure)
+- [FAQ](#faq)
+
+---
+
+## 이게 뭔가요? / What is this?
+
+**blog-writer-mcp**는 Claude나 ChatGPT에 직접 연결해서 쓰는 블로그 자동화 도구입니다.
+
+*blog-writer-mcp is a blog automation tool that connects directly to Claude or ChatGPT.*
+
+### 기존 블로그 자동화 도구와 뭐가 다른가요?
+
+| | 기존 도구 | blog-writer-mcp |
+|---|---|---|
+| **글쓰기 기반** | 당신이 쓴 글을 학습 | 당신이 **사랑한 것들**을 학습 |
+| **대상** | 글을 쓸 수 있는 사람 | 글을 못 써도 OK |
+| **인터페이스** | 별도 웹 UI 필요 | Claude / ChatGPT 대화창 |
+| **개인화 방식** | 문체 모방 | 세계관·감수성 반영 |
+| **가격** | 월정액 유료 | **완전 무료** |
+
+### How is this different from other blog tools?
+
+| | Other tools | blog-writer-mcp |
+|---|---|---|
+| **Writing basis** | Learns from your past writing | Learns from what you **love** |
+| **Target users** | People who can write | Anyone, even non-writers |
+| **Interface** | Separate web UI | Claude / ChatGPT chat |
+| **Personalization** | Style mimicking | Worldview & sensibility |
+| **Price** | Monthly subscription | **Completely free** |
+
+---
+
+## 창작 DNA란? / What is Creative DNA?
+
+대부분의 AI 글쓰기 도구는 "당신이 쓴 글을 업로드하면 그 스타일로 써드립니다"라고 합니다.
+그런데 **글을 못 쓰기 때문에 도움받으러 온 사람에게는 소용이 없습니다.**
+
+*Most AI writing tools say "upload your past writing and we'll match your style."
+But that's useless for people who came for help precisely because they can't write.*
+
+창작 DNA는 다릅니다. 당신이 **감동받은 것들**에서 당신의 세계관을 추출합니다.
+
+*Creative DNA is different. It extracts your worldview from the things that **moved you**.*
+
+```text
+좋아하는 작가  →  문체의 깊이와 호흡
+좋아하는 책    →  주제의식과 인생관
+좋아하는 영화  →  감정의 결과 스케일
+좋아하는 애니  →  가치관과 전달 방식
+
+Favorite authors  →  Depth and rhythm of writing
+Favorite books    →  Themes and life philosophy
+Favorite films    →  Emotional register and scale
+Favorite anime    →  Values and how they're conveyed
 ```
 
-### 4계층 구조
+예를 들어 / For example:
 
-```
-LAYER 1  AI 콘텐츠 생성   OpenClaw / Claude / Gemini
-LAYER 2  변환 엔진        Python (AI 없음)
-LAYER 3  배포 엔진        Python (AI 없음)
-LAYER 4  분석 + 피드백    Python (AI 없음)
-```
+> 파울로 코엘료 + 그리스인 조르바 + 인터스텔라 + 지브리
+>
+> Paulo Coelho + Zorba the Greek + Interstellar + Ghibli
+
+이 조합에서 시스템은 다음을 추출합니다:
+
+*From this combination, the system extracts:*
+
+- **테마**: 자유, 여정, 우주적 연결, 삶의 긍정
+- **문체**: 단순한 문장 안에 깊은 진리 / Simple sentences carrying deep truths
+- **금지 톤**: 설교적, 냉소적, 기계적 / Preachy, cynical, mechanical
+
+그 결과, AI가 쓴 글인데 당신이 쓴 것처럼 느껴집니다.
+
+*The result: AI-written content that feels like *you* wrote it.*
 
 ---
 
-## 설치
+## 주요 기능 / Features
 
-### 필수 요구사항
+### 창작 DNA 시스템 / Creative DNA System
+- 좋아하는 작가·책·영화에서 글쓰기 세계관 자동 추출
+- Automatically extracts writing worldview from favorite authors, books, films
+- 한 번 설정하면 이후 모든 글에 자동 적용
+- Set once, applied to all future writing
 
-- Python 3.11+
-- FFmpeg (https://ffmpeg.org/download.html) — Windows PATH 등록 필요
-- Node.js 18+ (https://nodejs.org/) — 대시보드용
+### AI 글쓰기 / AI Writing
+- 트렌드 수집 → 주제 선정 → 글 작성 → 발행 전 과정 자동화
+- Full pipeline: trend collection → topic selection → writing → publishing
+- Google Blogger 자동 발행 / Auto-publish to Google Blogger
+- 이미지 자동 생성 첨부 / Auto-generate and attach images
 
-### 1단계: 저장소 클론
+### SEO + GEO 최적화 / SEO + GEO Optimization
+- 메타 태그, 헤딩 구조, 키워드 밀도 자동 최적화
+- Auto-optimize meta tags, heading structure, keyword density
+- GEO (Generative Engine Optimization): ChatGPT·Claude·Perplexity 인용 최적화
+- GEO: Optimize for citations in AI search engines
+
+### 성과 피드백 루프 / Performance Feedback Loop
+- Google Search Console 연동으로 실제 트래픽 분석
+- Analyze real traffic via Google Search Console
+- 성과 좋은 글 패턴 → 다음 주제 추천 자동화
+- High-performing patterns → automated next topic recommendations
+
+### 쿠팡 파트너스 자동 링크 / Auto Affiliate Links
+- 글 내용에 맞는 쿠팡 링크 자동 삽입
+- Automatically insert relevant Coupang affiliate links
+
+---
+
+## 설치 방법 / Installation
+
+### 사전 요구사항 / Prerequisites
+
+- Python 3.11 이상 / Python 3.11 or higher
+- Node.js 18 이상 (프론트엔드 빌드용) / Node.js 18+ (for frontend build)
+- Claude Desktop 또는 ChatGPT Plus/Pro 계정
+- Claude Desktop or ChatGPT Plus/Pro account
+- Google Blogger 블로그 / Google Blogger blog
+
+### 1단계 — 코드 다운로드 / Step 1 — Download
 
 ```bash
 git clone https://github.com/sinmb79/blog-writer_mcp.git
 cd blog-writer_mcp
 ```
 
-### 2단계: 자동 설치
-
-```batch
-scripts\setup.bat
-```
-
-자동 실행 내용:
-- Python venv 생성 + 패키지 설치
-- 데이터/에셋/입력 디렉터리 생성
-- 한글 폰트 다운로드 (Noto Sans KR)
-- Windows 작업 스케줄러 등록
-
-### 3단계: API 키 설정
-
-`.env.example`을 참고해 API 키를 입력합니다.
+### 2단계 — 환경 설정 / Step 2 — Environment Setup
 
 ```bash
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_REFRESH_TOKEN=   # get_token.py 실행 후 자동 입력
-BLOG_MAIN_ID=           # Blogger 블로그 ID (18자리 숫자)
-TELEGRAM_BOT_TOKEN=
-TELEGRAM_CHAT_ID=
+# Windows
+scripts\setup.bat
+
+# Mac/Linux
+pip install -e .
 ```
 
-보안 팁: .env 파일을 프로젝트 폴더 외부(예: D:\key\)에 두고
-`load_dotenv(dotenv_path='D:/key/blog-writer.env')` 형태로 참조하면
-git에 절대 포함되지 않습니다. 이 프로젝트는 이 방식을 기본으로 사용합니다.
+`setup.bat`이 자동으로 / `setup.bat` automatically:
+- Python 가상환경 생성 / Creates Python virtual environment
+- 패키지 설치 / Installs packages
+- 필요한 디렉토리 생성 / Creates required directories
+- 한글 폰트 다운로드 / Downloads Korean fonts
 
-### 4단계: Google OAuth 토큰 발급
+### 3단계 — API 키 설정 / Step 3 — API Keys
+
+```bash
+copy .env.example .env
+```
+
+`.env` 파일을 열어서 아래 값을 입력합니다 / Open `.env` and fill in:
+
+```env
+# Google Blogger 인증 / Google Blogger Auth
+GOOGLE_CLIENT_ID=your_client_id
+GOOGLE_CLIENT_SECRET=your_client_secret
+# 아래 명령어 실행 후 자동 입력됨
+# Run the command below and this will be auto-filled:
+# python scripts/get_token.py
+GOOGLE_REFRESH_TOKEN=
+
+# 블로그 ID (Blogger URL에서 확인) / Blog ID (found in Blogger URL)
+BLOG_MAIN_ID=your_18_digit_blog_id
+
+# Telegram 알림 (선택) / Telegram notifications (optional)
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+
+# 쿠팡 파트너스 (선택) / Coupang Partners (optional)
+COUPANG_ACCESS_KEY=
+COUPANG_SECRET_KEY=
+```
+
+### 4단계 — Google 인증 / Step 4 — Google Authentication
 
 ```bash
 python scripts/get_token.py
 ```
 
-브라우저에서 Google 로그인 후 `token.json`에 자동 저장됩니다.
-YouTube 업로드를 사용하려면 youtube.upload 스코프가 포함되어야 합니다.
+브라우저가 열리면 Google 계정으로 로그인 → 자동으로 `token.json` 저장됩니다.
 
-### 5단계: 대시보드 프론트엔드 설치
+*A browser will open. Log in with your Google account → `token.json` is saved automatically.*
 
-```bash
-cd dashboard/frontend && npm install && cd ../..
-```
-
----
-
-## 설정
-
-### config/engine.json
-
-```json
-{
-  "writing": "openclaw",
-  "tts":     "edge_tts",
-  "image":   "openai",
-  "video":   "local"
-}
-```
-
-writing 옵션: openclaw / claude / gemini / gemini_web / openai
-
-### config/shorts_config.json
-
-| 키 | 기본값 | 설명 |
-|----|--------|------|
-| enabled | true | Shorts 봇 활성화 |
-| production_mode | "auto" | auto 또는 semi_auto |
-| tts.engine_priority | ["elevenlabs","google_cloud","edge_tts"] | TTS 우선순위 |
-| visuals.source_priority | ["input_dir","character_assets","pexels","pixabay"] | 영상 소스 |
-| youtube.daily_upload_limit | 6 | 하루 최대 업로드 수 |
-
----
-
-## 사용법
-
-### Runtime CLI (`blog.cmd`)
-
-```batch
-blog scheduler          스케줄러 시작 (메인 프로세스)
-blog server             대시보드 서버 시작
-blog status             현재 상태 확인
-blog pipeline           파이프라인 단계 확인
-blog content            콘텐츠 큐 확인
-blog review             검수 대기 목록 확인
-blog approve <id>       검수 승인
-blog reject <id>        검수 반려
-blog sessions           수동 어시스트 세션 목록
-blog session <id>       세션 상세 확인
-blog assist <url>       수동 어시스트 세션 시작
-blog logs [n]           최근 로그 확인
-blog analytics          분석 요약 확인
-```
-
-### Packaged CLI (`bw`)
-
-```bash
-python -m blogwriter.cli --help
-bw init
-bw write
-bw shorts
-bw publish
-bw status
-bw doctor
-bw config show
-```
-
-### MCP Server
+### 5단계 — MCP 서버 실행 / Step 5 — Start MCP Server
 
 ```bash
 python -m blogwriter_mcp.server
 ```
 
-기본 MCP 엔드포인트: `http://127.0.0.1:8766/mcp`
+`http://127.0.0.1:8766/mcp` 에서 서버가 실행됩니다.
+
+*Server runs at `http://127.0.0.1:8766/mcp`.*
 
 ---
 
-## 대시보드
+## Claude Desktop 연결 / Claude Desktop Setup
 
-```batch
-blog server
-```
+### Claude Desktop이란? / What is Claude Desktop?
 
-접속: http://localhost:8080
+Anthropic이 만든 AI 앱입니다. [claude.ai/download](https://claude.ai/download)에서 무료로 다운로드할 수 있습니다.
+MCP 서버를 연결하면 Claude가 직접 블로그 도구를 사용할 수 있습니다.
 
-| 탭 | 기능 |
-|----|------|
-| Overview | 오늘 수집/발행/배포 현황 |
-| Content | 글감 목록, 원고 검토, 수동 발행 |
-| 수동모드 | URL 입력 → 커스텀 콘텐츠 반자동 제작 |
-| Analytics | Search Console 성과, 수익 추이 |
-| Novel | 소설 에피소드 관리 |
-| Settings | AI 연결, 배포채널, 품질/스케줄, 비용관리 |
-| Logs | 실시간 로그 조회 |
+*Claude Desktop is an AI app by Anthropic. Download free at [claude.ai/download](https://claude.ai/download).
+Connect an MCP server and Claude can directly use blog tools.*
 
----
+### 설정 방법 / Setup
 
-## YouTube Shorts 봇
+**설정 파일 위치 / Config file location:**
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
-블로그 글을 15~30초 세로 영상(9:16, 1080x1920)으로 자동 변환합니다.
-FFmpeg만으로 조립하며 CapCut 등 별도 편집 도구가 필요 없습니다.
-
-### 파이프라인
-
-```
-블로그 글
-  STEP 0  Asset Resolution    에셋 소스 결정 (auto/semi_auto)
-  STEP 1  Script Extraction   LLM으로 hook/body/closer 추출
-  STEP 2  Visual Sourcing     스톡 영상 수집 + 캐릭터 오버레이
-  STEP 3  TTS Generation      음성 합성 + 단어별 타임스탬프
-  STEP 4  Caption Rendering   ASS 자막 (단어별 노란색 하이라이트)
-  STEP 5  Video Assembly      FFmpeg 조립 + 루프 최적화
-  STEP 6  YouTube Upload      Data API v3 업로드 + AI 공시 레이블
-YouTube Shorts
-```
-
-### 생산 모드
-
-| 모드 | 설명 |
-|------|------|
-| auto | 완전 자동, 무인 실행 |
-| semi_auto | input/ 폴더 파일 우선 사용, 없는 항목만 자동 |
-
-#### semi_auto 파일 규칙
-
-```
-input/scripts/{article_id}.json    LLM 건너뜀, 직접 작성한 스크립트
-input/images/{article_id}_1.png    스톡 영상 대신 이미지 사용 (Ken Burns)
-input/videos/{article_id}_1.mp4    스톡 영상 대신 이 클립 사용
-input/audio/{article_id}.wav       TTS 건너뜀, 직접 녹음 음성 사용
-```
-
-처리된 파일은 input/_processed/ 로 자동 이동됩니다.
-
-### TTS 엔진
-
-| 순위 | 엔진 | 비용 |
-|------|------|------|
-| 1 | ElevenLabs | 유료 |
-| 2 | Google Cloud TTS Neural2 | 유료 |
-| 3 | Edge TTS ko-KR-SunHiNeural | 무료 |
-
-API 키 없이 Edge TTS로 즉시 사용 가능합니다.
-
-### Shorts CLI
-
-```bash
-python bots/shorts_bot.py                           eligible 글 자동 선택
-python bots/shorts_bot.py --slug my-article         특정 글 지정
-python bots/shorts_bot.py --dry-run                 렌더링만, 업로드 안 함
-python bots/shorts_bot.py --upload path/video.mp4   기존 영상 업로드
-```
-
----
-
-## 멀티플랫폼 배포
-
-| 플랫폼 | 스케줄 | 필요 키 |
-|--------|--------|---------|
-| Blogger | 09:00 | Google OAuth |
-| Instagram 카드 | 10:00 | Instagram Graph API |
-| Instagram 릴스 | 10:30 | Instagram Graph API |
-| YouTube Shorts | 10:35, 16:00 | YouTube Data API v3 |
-| X (Twitter) | 11:00 | X API v2 |
-| TikTok | 18:00 | TikTok Content Posting API |
-| YouTube (긴 영상) | 20:00 | YouTube Data API v3 |
-
----
-
-## 소설 파이프라인
-
-매주 월/목요일 09:00에 소설 에피소드를 자동 생성하고 블로그에 발행합니다.
+파일을 열어 아래 내용을 추가합니다 / Open the file and add:
 
 ```json
 {
-  "id": "my-novel",
-  "title": "소설 제목",
-  "genre": "SF",
-  "setting": "2087년 서울...",
-  "characters": [{"name": "주인공", "role": "탐정"}],
-  "episode_length": 2000,
-  "schedule": "mon,thu"
+  "mcpServers": {
+    "blog_writer": {
+      "command": "mcp-remote",
+      "args": ["http://127.0.0.1:8766/mcp"]
+    }
+  }
 }
 ```
 
-파일 위치: config/novels/{novel_id}.json
+**Claude Desktop을 재시작합니다 / Restart Claude Desktop.**
+
+입력창 하단에 도구 아이콘이 생기면 연결 성공입니다.
+
+*If you see a tools icon at the bottom of the input box, the connection is successful.*
 
 ---
 
-## 수동 어시스트 모드
+## ChatGPT 연결 / ChatGPT Setup
 
-특정 URL의 콘텐츠를 기반으로 반자동으로 콘텐츠를 제작합니다.
+> **필요 조건 / Requirements**: ChatGPT Plus, Pro, Team, 또는 Enterprise 구독
+> ChatGPT Plus, Pro, Team, or Enterprise subscription required
 
-1. 대시보드 > 수동모드 탭에서 URL 입력
-2. AI가 글 초안 + 이미지 프롬프트 생성
-3. Telegram으로 프롬프트 수신 → ChatGPT/Midjourney로 이미지 생성
-4. 생성된 이미지를 Telegram으로 전송 → 자동 조립 및 발행
+ChatGPT는 `localhost`에 직접 접속할 수 없어서 터널링이 필요합니다.
 
----
+*ChatGPT cannot access `localhost` directly, so tunneling is required.*
 
-## Telegram 명령어
+### 1단계 — ngrok 설치 / Step 1 — Install ngrok
 
-### 기본 명령
+[ngrok.com](https://ngrok.com)에서 무료 계정 생성 후 설치합니다.
 
-| 명령어 | 기능 |
-|--------|------|
-| /status | 전체 현황 |
-| /pending | 발행 대기 글 목록 |
-| /approve [slug] | 발행 승인 |
-| /reject [slug] | 거부 |
-| /report | 성과 리포트 즉시 생성 |
-| /topics | 오늘 수집된 글감 |
-| /convert | 변환 엔진 즉시 실행 |
-
-### Shorts 명령
-
-| 명령어 | 기능 |
-|--------|------|
-| /shorts status | Shorts 현황 |
-| /shorts mode auto or semi | 생산 모드 전환 |
-| /shorts input | input/ 폴더 현황 |
-| /shorts character bao or zero | 캐릭터 강제 지정 |
-| /shorts upload [경로] | 영상 즉시 업로드 |
-| /shorts skip [id] | 특정 글 Shorts 제외 |
-| /shorts run | 즉시 실행 |
-
-### 소설 명령
-
-| 명령어 | 기능 |
-|--------|------|
-| /novel_list | 소설 목록 |
-| /novel_gen [id] | 즉시 생성 |
-| /novel_status | 파이프라인 현황 |
-
-자연어로도 제어 가능합니다 (Claude API 연동 시):
-"오늘 발행한 글 성과 알려줘", "AI 뉴스 주제로 글 써줘"
-
----
-
-## 스케줄
-
-| 시간 | 작업 |
-|------|------|
-| 07:00 | 트렌드 수집 |
-| 08:00 | AI 글쓰기 |
-| 08:30 | 변환 엔진 |
-| 09:00 | 블로그 발행 |
-| 10:00 | 인스타그램 카드 |
-| 10:30 | 인스타그램 릴스 |
-| 10:35 | YouTube Shorts 1차 |
-| 11:00 | X(Twitter) |
-| 16:00 | YouTube Shorts 2차 |
-| 18:00 | TikTok |
-| 20:00 | YouTube |
-| 22:00 | 일일 성과 리포트 |
-| 일요일 22:30 | 주간 성과 리포트 |
-| 월/목 09:00 | 소설 에피소드 생성 |
-
----
-
-## 엔진 추상화
-
-| 기능 | 옵션 |
-|------|------|
-| 글쓰기 | openclaw (로컬, 무료) / claude / gemini / openai |
-| TTS | edge_tts (무료) / google_cloud / elevenlabs |
-| 이미지 | manual / openai (DALL-E) |
-| 영상 | local (FFmpeg) / seedance / runway |
-
----
-
-## 개발 현황
-
-| Phase | 상태 | 내용 |
-|-------|------|------|
-| Phase 1A | 로컬 동작 확인 | 블로그 자동화 기본 파이프라인 |
-| Phase 1B | 부분 구현 | Instagram, X 배포 모듈 존재, 운영 흐름 보강 필요 |
-| Phase 2 | 부분 구현 | Shorts 변환 및 TikTok, YouTube 관련 코드 포함 |
-| Shorts Bot | 로컬 검증 필요 | YouTube Shorts 자동 생산 파이프라인 |
-| 대시보드 | 로컬 빌드 완료 | React + FastAPI 웹 대시보드 |
-| 소설 파이프라인 | 코드 포함 | 자동 소설 연재 |
-| 수동 어시스트 | 코드 포함 | 반자동 콘텐츠 제작 |
-
----
-
-## Release Verification
-
-로컬 릴리즈 체크리스트:
+*Create a free account at [ngrok.com](https://ngrok.com) and install.*
 
 ```bash
-python -m pytest tests -v
-python -m compileall blogwriter bots dashboard blog_engine_cli.py blog_runtime.py runtime_guard.py
-cd dashboard/frontend && npm run build
+ngrok http 8766
+```
+
+`https://abc123.ngrok.app` 같은 주소가 생성됩니다.
+
+*A URL like `https://abc123.ngrok.app` will be generated.*
+
+### 2단계 — ChatGPT Connector 등록 / Step 2 — Register ChatGPT Connector
+
+1. ChatGPT 설정 열기 / Open ChatGPT Settings
+2. **Connectors → Developer Mode 활성화 / Enable Developer Mode**
+3. **Create** 클릭 / Click Create
+4. 아래와 같이 입력 / Fill in:
+
+```text
+Connector name:  blog-writer-mcp
+Description:     AI 블로그 자동화. 창작 DNA로 당신만의 목소리로 씁니다.
+                 AI blog automation. Write in your own voice with Creative DNA.
+Connector URL:   https://abc123.ngrok.app/mcp
+```
+
+> URL이 바뀌면 Connector를 업데이트해야 합니다.
+> Update the Connector when the tunnel URL changes.
+
+---
+
+## 사용 방법 / How to Use
+
+### 처음 시작하기 — 창작 DNA 설정 / Getting Started — Set Your Creative DNA
+
+Claude Desktop이나 ChatGPT에서 이렇게 말하세요 / Say this in Claude Desktop or ChatGPT:
+
+```text
+내 창작 DNA를 설정해줘.
+
+좋아하는 작가: 파울로 코엘료
+좋아하는 책: 그리스인 조르바
+좋아하는 영화: 인터스텔라
+좋아하는 애니: 지브리 스타일 (자연, 교훈, 경이로움)
+나의 키워드: 자유, 여정, 인간과 기술의 공존
+
+---
+
+Set my creative DNA.
+
+Favorite author: Paulo Coelho
+Favorite book: Zorba the Greek
+Favorite film: Interstellar
+Favorite anime style: Ghibli (nature, lessons, wonder)
+My keywords: freedom, journey, human-technology coexistence
+```
+
+시스템이 취향을 분석해서 당신만의 글쓰기 세계관을 추출합니다. 한 번 설정하면 끝입니다.
+
+*The system analyzes your preferences and extracts your unique writing worldview. Set it once and you're done.*
+
+---
+
+### 글 쓰기 / Write an Article
+
+```text
+오늘 AI 관련 트렌드 하나 골라서 블로그 글 써줘.
+내 DNA 스타일로.
+
+---
+
+Pick one AI trend today and write a blog post.
+Apply my DNA style.
+```
+
+Claude가 알아서 다음 흐름을 수행할 수 있습니다:
+
+1. 트렌드 수집 (`blog_get_trending`)
+2. 주제 선정 및 글 작성 (`blog_write_article`)
+3. SEO 최적화 (`blog_optimize_seo`)
+4. 이미지 생성 (`blog_generate_image`)
+5. 쿠팡 링크 삽입 (`blog_insert_affiliate_links`)
+6. 발행 (`blog_publish`)
+
+---
+
+### 성과 확인 / Check Performance
+
+```text
+최근 한 달 블로그 성과 보여줘. 다음에 뭘 쓰면 좋을지 추천도 해줘.
+
+---
+
+Show me last month's blog performance. Recommend what to write next.
 ```
 
 ---
 
-## 라이선스
+### 전체 파이프라인 한 번에 / Full Pipeline at Once
 
-MIT License
+```text
+"AI와 인간의 미래" 주제로 전체 파이프라인 돌려줘.
 
 ---
 
-The 4th Path — 22B Labs
-AI 시대, 1인 미디어의 새로운 길
+Run the full pipeline on the topic "The future of AI and humanity."
+```
+
+---
+
+## 도구 목록 / Tools
+
+| 도구 이름 / Tool Name | 설명 / Description | 기반 / Based on |
+|---|---|---|
+| `blog_get_trending` | 트렌드 수집 / Collect trends | `collector_bot.py` |
+| `blog_write_article` | 글 작성 (DNA 적용) / Write article (with DNA) | `writer_bot.py` |
+| `blog_generate_image` | 이미지 생성 / Generate image | `image_bot.py` |
+| `blog_optimize_seo` | SEO + GEO 최적화 / SEO + GEO optimization | `article_parser.py` + `seo_optimizer.py` |
+| `blog_insert_affiliate_links` | 쿠팡 링크 삽입 / Insert affiliate links | `linker_bot.py` |
+| `blog_publish` | Blogger 발행 / Publish to Blogger | `publisher_bot.py` |
+| `blog_get_analytics` | 성과 분석 / Performance analytics | `analytics_bot.py` |
+| `blog_full_pipeline` | 전체 자동화 / Full automation | `assist_bot.py` + `server.py` |
+| `blog_set_creative_dna` | 창작 DNA 설정 / Set Creative DNA | `creative_dna.py` |
+| `blog_get_performance_feedback` | 성과 피드백 / Performance feedback | `performance_feedback.py` |
+
+---
+
+## 프로젝트 구조 / Project Structure
+
+```text
+blog-writer-mcp/
+├── bots/                      # 핵심 로직 / Core logic
+│   ├── collector_bot.py       # 트렌드 수집 / Trend collection
+│   ├── writer_bot.py          # AI 글쓰기 / AI writing
+│   ├── publisher_bot.py       # Blogger 발행 / Blogger publishing
+│   ├── image_bot.py           # 이미지 생성 / Image generation
+│   ├── analytics_bot.py       # 성과 분석 / Analytics
+│   ├── linker_bot.py          # 쿠팡 링크 / Coupang links
+│   └── engine_loader.py       # AI 엔진 팩토리 / AI engine factory
+│
+├── blogwriter_mcp/            # MCP 서버 / MCP server
+│   ├── server.py              # FastMCP HTTP, :8766
+│   └── tools/
+│       ├── creative_dna.py    # 창작 DNA / Creative DNA
+│       ├── seo_optimizer.py   # SEO + GEO
+│       └── performance_feedback.py
+│
+├── config/
+│   ├── engine.json            # AI 엔진 설정 / AI engine config
+│   └── creative_dna.json      # DNA 설정 / DNA config
+│
+├── templates/                 # 프롬프트 템플릿 / Prompt templates
+├── tests/                     # 테스트 (pytest 22 passed)
+├── .env.example               # 환경변수 예시 / Env template
+├── pyproject.toml
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## FAQ
+
+**Q: 글쓰기 경험이 전혀 없어도 되나요?**
+
+됩니다. 오히려 이 도구가 더 필요한 분입니다. 당신이 감동받은 것들만 있으면 됩니다.
+
+*Yes. In fact, this tool is made for you. All you need is the things that moved you.*
+
+---
+
+**Q: 창작 DNA를 설정하지 않으면 어떻게 되나요?**
+
+일반적인 AI 글쓰기로 작동합니다. 언제든지 DNA를 설정하면 즉시 적용됩니다.
+
+*It works as a regular AI writer. Set your DNA anytime and it applies immediately.*
+
+---
+
+**Q: Blogger 외에 다른 플랫폼도 지원하나요?**
+
+현재 버전은 Google Blogger 기준입니다. WordPress, 네이버 블로그 지원은 이후 버전에서 확장할 수 있습니다.
+
+*Current version supports Google Blogger. WordPress and Naver Blog support can be added in a future version.*
+
+---
+
+**Q: Claude Desktop이 없으면 쓸 수 없나요?**
+
+Claude Desktop 또는 ChatGPT Plus/Pro 중 하나만 있으면 됩니다.
+
+*You need either Claude Desktop or ChatGPT Plus/Pro - just one of them.*
+
+---
+
+**Q: API 키가 많이 필요한가요?**
+
+기본 기능은 Google 계정만 있으면 됩니다. Telegram, 쿠팡, Search Console은 모두 선택 사항입니다.
+
+*Basic features only require a Google account. Telegram, Coupang, and Search Console are all optional.*
+
+---
+
+**Q: 상업적으로 사용해도 되나요?**
+
+MIT 라이선스입니다. 상업적 사용 포함 제한 없이 자유롭게 사용하실 수 있습니다.
+
+*MIT License. You can use it commercially and without restrictions.*
+
+---
+
+## 기여 / Contributing
+
+버그 리포트, 기능 제안, PR 모두 환영합니다.
+
+*Bug reports, feature suggestions, and PRs are all welcome.*
+
+```bash
+# 로컬 개발 / Local development
+git clone https://github.com/sinmb79/blog-writer_mcp.git
+cd blog-writer_mcp
+pip install -e ".[dev]"
+pytest tests/ -v
+```
+
+---
+
+## 관련 프로젝트 / Related Projects
+
+- [sinmb79/blog-writer](https://github.com/sinmb79/blog-writer) - 원본 블로그 자동화 / Original blog automation
+
+---
+
+## 만든 사람 / Author
+
+**22B Labs** (sinmb79)
+
+*The 4th Path: `P4 := ⟨H⊕A⟩ ↦ Ω`*
+
+인간(H)과 AI(A)가 결합하여 더 나은 세상(Ω)을 향해.
+
+*Human (H) and AI (A) together, moving toward a better world (Ω).*
+
+---
+
+<p align="center">
+  <i>홍익인간(弘益人間) - 널리 인간을 이롭게 한다</i><br/>
+  <i>Broadly benefit humanity</i>
+</p>
