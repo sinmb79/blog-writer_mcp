@@ -194,6 +194,56 @@ class GeminiWriter(BaseWriter):
             return ''
 
 
+class ClaudeCodeWriter(BaseWriter):
+    """Claude Code CLI(claude -p)를 subprocess로 호출하는 글쓰기 엔진.
+
+    Claude.ai 구독(Pro/Max) 인증을 그대로 사용 — API 키 불필요.
+    사전 조건: claude CLI가 PATH에 있고 로그인 상태일 것.
+    """
+
+    _CLI = 'claude'
+
+    def __init__(self, cfg: dict):
+        self.model = cfg.get('model', '')  # '' → CLI 기본값(Sonnet)
+        self.timeout = cfg.get('timeout', 300)
+
+    def write(self, prompt: str, system: str = '') -> str:
+        try:
+            message = f"{system}\n\n{prompt}".strip() if system else prompt
+            cmd = [self._CLI, '-p', '--output-format', 'text']
+            if self.model:
+                cmd += ['--model', self.model]
+            if system:
+                cmd += ['--system-prompt', system]
+                message = prompt
+            cmd.append(message)
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                timeout=self.timeout,
+                text=True,
+                encoding='utf-8',
+            )
+            if result.returncode != 0:
+                logger.error(f"ClaudeCodeWriter returncode={result.returncode} stderr={result.stderr[:300]}")
+                return ''
+            text = result.stdout.strip()
+            if not text:
+                logger.error(f"ClaudeCodeWriter 빈 응답. stderr={result.stderr[:200]}")
+                return ''
+            logger.info(f"ClaudeCodeWriter 완료 ({len(text)}자)")
+            return text
+        except subprocess.TimeoutExpired:
+            logger.error(f"ClaudeCodeWriter 타임아웃 ({self.timeout}s)")
+            return ''
+        except FileNotFoundError:
+            logger.error("ClaudeCodeWriter: claude CLI를 찾을 수 없음 (PATH 확인)")
+            return ''
+        except Exception as e:
+            logger.error(f"ClaudeCodeWriter 오류: {e}")
+            return ''
+
+
 class ClaudeWebWriter(BaseWriter):
     """Playwright Chromium에 세션 쿠키를 주입해 claude.ai를 자동화하는 Writer
 
@@ -609,6 +659,7 @@ class EngineLoader:
 
         writers = {
             'claude': ClaudeWriter,
+            'claude_code': ClaudeCodeWriter,
             'openclaw': OpenClawWriter,
             'gemini': GeminiWriter,
             'claude_web': ClaudeWebWriter,
