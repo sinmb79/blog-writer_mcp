@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+from blogwriter_mcp.tools.creative_dna import CreativeDNA, NarrativeDNA
 from bots import writer_bot
 
 
@@ -15,43 +16,41 @@ class DummyWriter:
 
 
 RAW_OUTPUT = """---TITLE---
-테스트 제목
+Test Title
 
 ---META---
-테스트 메타 설명
+Test meta description
 
 ---SLUG---
 test-slug
 
 ---TAGS---
-AI, 테스트
-
+AI, Test
 ---CORNER---
-쉬운세상
+Easy World
 
 ---BODY---
-<h2>본문</h2><p>내용</p>
+<h2>Body</h2><p>Content</p>
 
 ---KEY_POINTS---
-- 첫째
-- 둘째
+- First
+- Second
 
 ---COUPANG_KEYWORDS---
-키보드
-
+keyboard
 ---SOURCES---
-https://example.com | 예시 출처 | 2026-04-02
+https://example.com | Example source | 2026-04-02
 
 ---DISCLAIMER---
-주의
+Be careful
 """
 
 
 def test_generate_article_supports_style_prefix_without_persisting():
     topic_data = {
-        "topic": "AI와 인간의 미래",
-        "corner": "쉬운세상",
-        "description": "설명",
+        "topic": "AI and the future of humans",
+        "corner": "Easy World",
+        "description": "Description",
         "source_url": "https://example.com",
         "published_at": "2026-04-02T00:00:00",
     }
@@ -60,19 +59,56 @@ def test_generate_article_supports_style_prefix_without_persisting():
     article = writer_bot.generate_article(
         topic_data,
         writer=dummy,
-        style_prefix="[창작 DNA]\n",
+        style_prefix="[Creative DNA]\n",
     )
 
-    assert article["title"] == "테스트 제목"
+    assert article["title"] == "Test Title"
     assert article["slug"] == "test-slug"
-    assert dummy.calls[0]["system"].startswith("[창작 DNA]\n")
+    assert dummy.calls[0]["system"].startswith("[Creative DNA]\n")
+
+
+def test_generate_article_accepts_full_narrative_dna_prefix():
+    topic_data = {
+        "topic": "Why one small object stays with us",
+        "corner": "Easy World",
+        "description": "Description",
+        "source_url": "https://example.com",
+        "published_at": "2026-04-02T00:00:00",
+    }
+    dummy = DummyWriter(RAW_OUTPUT)
+    dna = CreativeDNA(
+        themes=["wonder", "memory"],
+        writing_style_summary="Short and reflective sentences.",
+        emotional_register="Quiet but warm.",
+        structural_tendency="Begin close and widen toward meaning.",
+        philosophical_worldview="Meaning grows through attention to ordinary life.",
+        vocabulary_register="Simple words with emotional precision.",
+        narrative_dna=NarrativeDNA(
+            opening_hook="Start with one ordinary detail.",
+            tension_engine="Delay the emotional explanation until the reader leans in.",
+            signature_move="Cross realism with allegorical reflection.",
+            resolution_pattern="End with a quiet realization.",
+        ),
+        forbidden_tones=["didactic"],
+        key_prop_tendency="One object should carry the emotional turn.",
+        sample_sentence="The room changes when one object starts carrying memory.",
+    )
+
+    writer_bot.generate_article(
+        topic_data,
+        writer=dummy,
+        style_prefix=dna.to_prompt_context(include_narrative=True),
+    )
+
+    assert "Opening hook" in dummy.calls[0]["system"]
+    assert "Resolution pattern" in dummy.calls[0]["system"]
 
 
 def test_write_article_persists_generated_article_with_style_prefix(tmp_path: Path):
     topic_data = {
-        "topic": "AI와 인간의 미래",
-        "corner": "쉬운세상",
-        "description": "설명",
+        "topic": "AI and the future of humans",
+        "corner": "Easy World",
+        "description": "Description",
         "source_url": "https://example.com",
         "published_at": "2026-04-02T00:00:00",
     }
@@ -83,10 +119,10 @@ def test_write_article_persists_generated_article_with_style_prefix(tmp_path: Pa
         topic_data,
         output_path,
         writer=dummy,
-        style_prefix="[창작 DNA]\n",
+        style_prefix="[Creative DNA]\n",
     )
 
     saved = json.loads(output_path.read_text(encoding="utf-8"))
-    assert article["title"] == "테스트 제목"
-    assert saved["title"] == "테스트 제목"
-    assert dummy.calls[0]["system"].startswith("[창작 DNA]\n")
+    assert article["title"] == "Test Title"
+    assert saved["title"] == "Test Title"
+    assert dummy.calls[0]["system"].startswith("[Creative DNA]\n")
